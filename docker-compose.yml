@@ -1,0 +1,26 @@
+---
+version: '3.4'
+services:
+  weaviate:
+    volumes:
+      - C:\Users\daand\Documents\coding-projects\weaviate\data:/var/lib/weaviate/data
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8080'
+    - --scheme
+    - http
+    image: semitechnologies/weaviate:1.18.3
+    ports:
+    - 8080:8080
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 500
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate/data'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: text2vec-openai
+      OPENAI_APIKEY: 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
+      CLUSTER_HOSTNAME: 'node1'
+...
