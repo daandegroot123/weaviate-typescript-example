@@ -39,7 +39,8 @@ async function populateData(example: string) {
   // Prepare a batcher
   let batcher: ObjectsBatcher = client.batch.objectsBatcher();
   let counter: number = 0;
-  let batchSize: number = 100;
+  let batchSize: number = 10;
+  let batchNumber = 1;
 
   data.forEach((dataPoint: any) => {
 
@@ -60,15 +61,17 @@ async function populateData(example: string) {
 
     // When the batch counter reaches batchSize, push the objects to Weaviate
     if (counter++ == batchSize) {
+
+      batchNumber += 1
+
       // flush the batch queue
       batcher
       .do()
-      .then((res: any) => {
-        //console.log(res)
-      })
       .catch((err: Error) => {
         console.error(err)
       });
+
+      console.log('batchNumber', batchNumber)
 
       // restart the batch queue
       counter = 0;
@@ -85,14 +88,11 @@ async function populateData(example: string) {
   .catch((err: Error) => {
     console.error(err)
   });
-  
-  // Rate limit the requests to avoid overloading the server
-  await new Promise(resolve => setTimeout(resolve, 500));
 }
 
 function main() {
-  populateData(process.argv[2]);
-  //getAllVectors();
+  // populateData(process.argv[2]);
+  getAllVectors();
 }
 
 async function similarText(text: string) {
