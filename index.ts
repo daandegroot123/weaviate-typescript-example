@@ -1,193 +1,58 @@
 import weaviate, { WeaviateClient, ObjectsBatcher } from 'weaviate-ts-client';
-import fetch, { Response } from 'node-fetch';  // Note that Node implements its own Response type
 import csv from "csvtojson";
 import fs from 'fs';
 
 const client: WeaviateClient = weaviate.client({
   scheme: 'http',
   host: 'localhost:8080',
-  headers: {'X-OpenAI-Api-Key': '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'}
 });
 
-async function getJsonData(): Promise<any> {
-  const characters = await csv().fromFile('./lotr_characters.csv');
-  return characters;
+async function deleteClass(className: string) {
+  client.schema.classDeleter().withClassName(className).do().then((res: any) => {
+    //console.log(res);
+  })
+  .catch((err: Error) => {
+    console.error(err)
+  });;
 }
 
-async function importQuestions() {
+async function createClass(schemaObj: any) {
+  client.schema.classCreator().withClass(schemaObj).do().then((res: any) => {
+    //console.log(res);
+  })
+  .catch((err: Error) => {
+    console.error(err)
+  });
+}
+
+async function populateData(example: string) {
+  // Get the data from the data.json file and read the class that is used in the schema
+  const schemaObj = JSON.parse(fs.readFileSync('./examples/' + example + '/schema.json', 'utf8'));
+  const className = schemaObj.class;
+
+  // We are repopulating all the data, thus we remove existing data (if any) first
+  deleteClass(className);
+  createClass(schemaObj);
   // Get the data from the data.json file
-  const data = await getJsonData();
+  const { data } = JSON.parse(fs.readFileSync('./examples/' + example + '/data.json', 'utf8'));
 
   // Prepare a batcher
   let batcher: ObjectsBatcher = client.batch.objectsBatcher();
   let counter: number = 0;
   let batchSize: number = 100;
 
-  client.schema.classDeleter().withClassName('Character').do().then((res: any) => {
-    console.log(res);
-    })
-    .catch((err: Error) => {
-    console.error(err)
-    });;
+  data.forEach((dataPoint: any) => {
 
-  interface Character {
-    birth: string;
-    death: string;
-    gender: string;
-    hair: string;
-    height: string;
-    name: string;
-    race: string;
-    realm: string;
-    spouse: string;
-  }
-
-  // Create schema
-  const schemaObj = {
-    'class': 'Character',
-    'vectorizer': 'text2vec-openai',
-    "moduleConfig": {
-      "text2vec-openai": {
-        "model": "ada",
-        "modelVersion": "002",
-        "type": "text"
-      }
-    },
-    "properties": [
-      {
-        "dataType": [
-          "text"
-        ],
-        "moduleConfig": {
-          "text2vec-openai": {
-            "skip": false,
-            "vectorizePropertyName": true
-          }
-        },
-        "name": "birth"
-      },
-      {
-        "dataType": [
-          "text"
-        ],
-        "moduleConfig": {
-          "text2vec-openai": {
-            "skip": false,
-            "vectorizePropertyName": true
-          }
-        },
-        "name": "death"
-      },
-      {
-        "dataType": [
-          "text"
-        ],
-        "moduleConfig": {
-          "text2vec-openai": {
-            "skip": false,
-            "vectorizePropertyName": true
-          }
-        },
-        "name": "gender"
-      },
-      {
-        "dataType": [
-          "text"
-        ],
-        "moduleConfig": {
-          "text2vec-openai": {
-            "skip": false,
-            "vectorizePropertyName": true
-          }
-        },
-        "name": "hair"
-      },
-      {
-        "dataType": [
-          "text"
-        ],
-        "moduleConfig": {
-          "text2vec-openai": {
-            "skip": false,
-            "vectorizePropertyName": true
-          }
-        },
-        "name": "height"
-      },
-      {
-        "dataType": [
-          "text"
-        ],
-        "moduleConfig": {
-          "text2vec-openai": {
-            "skip": false,
-            "vectorizePropertyName": true
-          }
-        },
-        "name": "name"
-      },
-      {
-        "dataType": [
-          "text"
-        ],
-        "moduleConfig": {
-          "text2vec-openai": {
-            "skip": false,
-            "vectorizePropertyName": true
-          }
-        },
-        "name": "race"
-      },
-      {
-        "dataType": [
-          "text"
-        ],
-        "moduleConfig": {
-          "text2vec-openai": {
-            "skip": false,
-            "vectorizePropertyName": true
-          }
-        },
-        "name": "realm"
-      },
-      {
-        "dataType": [
-          "text"
-        ],
-        "moduleConfig": {
-          "text2vec-openai": {
-            "skip": false,
-            "vectorizePropertyName": true
-          }
-        },
-        "name": "spouse"
-      }
-    ]
-  }
-
-  client.schema.classCreator().withClass(schemaObj).do().then((res: any) => {
-    console.log(res);
-    })
-    .catch((err: Error) => {
-    console.error(err)
+    // Create object properties from schema (make sure the property names match the schema)
+    const properties: any = {};
+    schemaObj.properties.forEach((property: any) => {
+      properties[property.name] = dataPoint[property.name];
     });
-
-  data.forEach((character: Character) => {
 
     // Create an object
     const obj = {
-      class: 'Character',
-      properties: {
-        birth: character.birth,
-        death: character.death,
-        gender: character.gender,
-        hair: character.hair,
-        height: character.height,
-        name: character.name,
-        race: character.race,
-        realm: character.realm,
-        spouse: character.spouse,
-      },
+      class: className,
+      properties: properties,
     }
 
     // add the object to the batch queue
@@ -220,9 +85,15 @@ async function importQuestions() {
   .catch((err: Error) => {
     console.error(err)
   });
+  
+  // Rate limit the requests to avoid overloading the server
+  await new Promise(resolve => setTimeout(resolve, 500));
 }
 
-//importQuestions();
+function main() {
+  populateData(process.argv[2]);
+  //getAllVectors();
+}
 
 async function similarText(text: string) {
   client.graphql
@@ -284,8 +155,6 @@ async function start(text: string) {
 //start('Wizard')
 
 import { TSV } from 'tsv';
-const tsv = TSV.stringify(JSON.parse(fs.readFileSync('embeddings.json', 'utf8')))
-fs.writeFileSync('embeddings.tsv', tsv)
 
 async function createTsv() {
   const characters = await csv().fromFile('./lotr_characters.csv');
@@ -294,4 +163,21 @@ async function createTsv() {
   fs.writeFileSync('meta.tsv', meta)
 }
 
-createTsv()
+//createTsv()
+
+async function getAllVectors() {
+  client.graphql
+  .get()
+  .withClassName('Company')
+  .withFields('name')
+  .withLimit(5000)
+  .do()
+  .then((res: any) => {
+    console.log(res.data.Get.Company.length)
+  })
+  .catch((err: Error) => {
+    console.error(err)
+  });
+}
+
+main();

@@ -1,3 +1,5 @@
-node_modules
+node_modules/
 .git
-chroma-test/node_modules
+package-lock.json
+.env
+data/

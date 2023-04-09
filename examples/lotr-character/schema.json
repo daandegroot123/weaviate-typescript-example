@@ -1,0 +1,121 @@
+{
+  "class": "Character",
+  "vectorizer": "text2vec-openai",
+  "moduleConfig": {
+    "text2vec-openai": {
+      "model": "ada",
+      "modelVersion": "002",
+      "type": "text"
+    }
+  },
+  "properties": [
+    {
+      "dataType": [
+        "text"
+      ],
+      "moduleConfig": {
+        "text2vec-openai": {
+          "skip": false,
+          "vectorizePropertyName": true
+        }
+      },
+      "name": "birth"
+    },
+    {
+      "dataType": [
+        "text"
+      ],
+      "moduleConfig": {
+        "text2vec-openai": {
+          "skip": false,
+          "vectorizePropertyName": true
+        }
+      },
+      "name": "death"
+    },
+    {
+      "dataType": [
+        "text"
+      ],
+      "moduleConfig": {
+        "text2vec-openai": {
+          "skip": false,
+          "vectorizePropertyName": true
+        }
+      },
+      "name": "gender"
+    },
+    {
+      "dataType": [
+        "text"
+      ],
+      "moduleConfig": {
+        "text2vec-openai": {
+          "skip": false,
+          "vectorizePropertyName": true
+        }
+      },
+      "name": "hair"
+    },
+    {
+      "dataType": [
+        "text"
+      ],
+      "moduleConfig": {
+        "text2vec-openai": {
+          "skip": false,
+          "vectorizePropertyName": true
+        }
+      },
+      "name": "height"
+    },
+    {
+      "dataType": [
+        "text"
+      ],
+      "moduleConfig": {
+        "text2vec-openai": {
+          "skip": false,
+          "vectorizePropertyName": true
+        }
+      },
+      "name": "name"
+    },
+    {
+      "dataType": [
+        "text"
+      ],
+      "moduleConfig": {
+        "text2vec-openai": {
+          "skip": false,
+          "vectorizePropertyName": true
+        }
+      },
+      "name": "race"
+    },
+    {
+      "dataType": [
+        "text"
+      ],
+      "moduleConfig": {
+        "text2vec-openai": {
+          "skip": false,
+          "vectorizePropertyName": true
+        }
+      },
+      "name": "realm"
+    },
+    {
+      "dataType": [
+        "text"
+      ],
+      "moduleConfig": {
+        "text2vec-openai": {
+          "skip": false,
+          "vectorizePropertyName": true
+        }
+      },
+      "name": "spouse"
+    }
+  ]
+}

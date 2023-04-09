@@ -29,15 +29,6 @@ async function importCompanies() {
     console.error(err)
     });;
 
-  interface Company {
-    name: string;
-    vertical: string;
-    year: string;
-    batch: string;
-    url: string;
-    description: string;
-  }
-
   // Create schema
   const schemaObj = {
     'class': 'Company',
