@@ -1,9 +1,8 @@
 {
   "dependencies": {
     "@types/node": "^18.15.11",
-    "csvtojson": "^2.0.10",
-    "node-fetch": "^3.3.1",
     "openai": "^3.2.1",
+    "ts-node": "^10.9.1",
     "tsv": "^0.2.0",
     "weaviate-ts-client": "^1.0.0"
   },
