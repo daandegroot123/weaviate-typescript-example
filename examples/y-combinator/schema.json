@@ -83,7 +83,7 @@
     },
     {
       "dataType": [
-        "text"
+        "string"
       ],
       "moduleConfig": {
         "text2vec-openai": {
@@ -95,7 +95,7 @@
     },
     {
       "dataType": [
-        "text"
+        "string"
       ],
       "moduleConfig": {
         "text2vec-openai": {
