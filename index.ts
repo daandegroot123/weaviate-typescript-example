@@ -8,15 +8,16 @@ const client: WeaviateClient = weaviate.client({
 });
 
 async function deleteClass(className: string) {
-  // TODO: check if class exists first
-
-
-  client.schema.classDeleter().withClassName(className).do().then((res: any) => {
-    //console.log(res);
-  })
-  .catch((err: Error) => {
-    console.error('Error while deleting class', err)
-  });;
+  client.schema.classGetter().withClassName(className).do().then((res: any) => {
+    client.schema.classDeleter().withClassName(className).do().then((res: any) => {
+      console.log('Class deleted: ' + className);
+    })
+    .catch((err: Error) => {
+      console.error('Error while deleting class ' + className, err)
+    });;
+  }).catch((err: Error) => {
+    console.error('Class not deleted, as it does not exist: ' + className)
+  });
 }
 
 async function createClass(schemaObj: any) {
