@@ -32,7 +32,7 @@ Populate the Weaviate database (make sure Docker is running). You can use one of
 
 Running `populate` will create a Weaviate database with the data from the example dataset (and remove any existing data with the same class). _I paid ~$0.20 in OpenAI usage to populate the Y Combinator dataset_
 ```
-ts-node index.ts populate <example-name>
+npm run populate --dataset=<example-name>
 ```
 
 If succesful, you can easily view and query your data via the Weaviate GraphQL API. You can use the [Apollo GraphQL Sandbox](https://studio.apollographql.com/sandbox/explorer) to explore the data and run queries. Just enter the graph url (`http://localhost:8080/v1/graphql`).
@@ -40,7 +40,7 @@ If succesful, you can easily view and query your data via the Weaviate GraphQL A
 ### Visualize your data
 If you want to have some extra fun, you can use [Tensorflow's Embedding Projector](https://projector.tensorflow.org/) to visualize your data. To get the .tsv files required use the following command (will place them inside of the `/example/<example-name>` folder):
 ```
-ts-node index.ts tsv <example-name>
+npm run tsv --dataset=<example-name>
 ```
 
 These can be uploaded to the website to visualize your data.
@@ -50,5 +50,5 @@ To create your own data, follow on of the examples:
 1. Create a new folder inside of `/examples` with the name of your dataset.
 2. Create a `schema.json` file in the root of your dataset folder. This file should contain the schema of your data.
 3. Create a `data.json` file in the root of your dataset folder. This file should contain the data of your dataset.
-4. Run `ts-node index.ts populate <your-dataset-name>` to populate the database with your data.
+4. Run `npm run populate --dataset=<your-dataset-name>` to populate the database with your data.
 

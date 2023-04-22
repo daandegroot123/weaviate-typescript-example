@@ -1,12 +1,20 @@
 {
+  "name": "weaviate-typescript-example",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "populate": "tsc && node dist/index.js populate %npm_config_dataset%",
+    "tsv": "tsc && node dist/index.js tsv %npm_config_dataset%"
+  },
   "dependencies": {
     "@types/node": "^18.15.11",
     "openai": "^3.2.1",
-    "ts-node": "^10.9.1",
     "tsv": "^0.2.0",
     "weaviate-ts-client": "^1.0.0"
   },
   "devDependencies": {
+    "typescript": "^3.7.2",
     "@types/tsv": "^0.2.1"
   }
 }
