@@ -14,7 +14,7 @@
     "weaviate-ts-client": "^1.0.0"
   },
   "devDependencies": {
-    "typescript": "^3.7.2",
+    "typescript": "^5.4.0",
     "@types/tsv": "^0.2.1"
   }
 }

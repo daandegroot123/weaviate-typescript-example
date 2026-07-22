@@ -8,25 +8,27 @@ const client: WeaviateClient = weaviate.client({
 });
 
 async function deleteClass(className: string) {
-  client.schema.classGetter().withClassName(className).do().then((res: any) => {
-    client.schema.classDeleter().withClassName(className).do().then((res: any) => {
-      console.log('Class deleted: ' + className);
-    })
-    .catch((err: Error) => {
-      console.error('Error while deleting class ' + className, err)
-    });;
-  }).catch((err: Error) => {
+  try {
+    await client.schema.classGetter().withClassName(className).do();
+  } catch (err) {
     console.error('Class not deleted, as it does not exist: ' + className)
-  });
+    return;
+  }
+
+  try {
+    await client.schema.classDeleter().withClassName(className).do();
+    console.log('Class deleted: ' + className);
+  } catch (err) {
+    console.error('Error while deleting class ' + className, err)
+  }
 }
 
 async function createClass(schemaObj: any) {
-  client.schema.classCreator().withClass(schemaObj).do().then((res: any) => {
-    //console.log(res);
-  })
-  .catch((err: Error) => {
+  try {
+    await client.schema.classCreator().withClass(schemaObj).do();
+  } catch (err) {
     console.error(err)
-  });
+  }
 }
 
 async function populateData(example: string) {
@@ -35,8 +37,8 @@ async function populateData(example: string) {
   const className = schemaObj.class;
 
   // We are repopulating all the data, thus we remove existing data (if any) first
-  deleteClass(className);
-  createClass(schemaObj);
+  await deleteClass(className);
+  await createClass(schemaObj);
 
   // Get the data from the data.json file
   const { data } = JSON.parse(fs.readFileSync('./examples/' + example + '/data.json', 'utf8'));
